@@ -73,11 +73,10 @@ LVM 激活可能带来自动扫描/自动激活与短暂写入窗口；**上面�
 
 ```bash
 sudo apt update
-sudo apt install -y git build-essential autoconf automake pkg-config libtool \
-  libblkid-dev libuuid1 uuid-dev libzstd-dev liblz4-dev zlib1g-dev \
-  libudev-dev libmount-dev libacl1-dev libattr1-dev libext2fs-dev python3
-./build.sh
-python3 -m unittest discover -s tests -v
+./setup.sh --system   # 首次安装 Ubuntu 系统依赖，含 python3-venv、mdadm、lvm2、smartmontools
+./setup.sh --build    # 创建 .venv、跑测试、编译兼容性 btrfs 工具
+source .venv/bin/activate
+python -m unittest discover -s tests -v
 ```
 
 只下载官方标记为 v6.17.1 的 `btrfs-progs` 并在本目录局部编译，不安装内核模块、不覆盖系统 btrfs。`patch_upstream.py` **只绕过观察到的标志检查**，不理解专有字段；构建失败请保存 `build.log`，不要随机修改源码。

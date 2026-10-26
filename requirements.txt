@@ -1,0 +1,2 @@
+# Python runtime: standard library only; no third-party PyPI requirements.
+# Do not put apt build dependencies here. See setup.sh --system.

@@ -17,18 +17,23 @@ Experienced Linux operators whose Synology DSM/SMB is unavailable, with a verifi
 - Exit code 0 does **not** mean all files recovered. Audit read errors, zero-byte media and compare independent inventories and decoded samples. SHA-256 hashes of destination files are not source correctness proofs.
 - Diagnostic snapshots, especially auth logs, may contain usernames, IPs, secrets or personal paths. Don't publish them or include photos/images in public reports.
 
-## Build on Ubuntu
+## Install on Ubuntu (recommended)
+
+**Python runtime dependencies:** standard library only. `requirements.txt` is intentionally empty of third-party packages. A local `.venv` isolates Python without installing anything into system Python. The patched upstream `btrfs` executable is a separate C build that needs Ubuntu `apt` development packages.
 
 ```bash
-sudo apt update
-sudo apt install -y git build-essential autoconf automake pkg-config libtool \
-  libblkid-dev libuuid1 uuid-dev libzstd-dev liblz4-dev zlib1g-dev libudev-dev \
-  libmount-dev libacl1-dev libattr1-dev libext2fs-dev python3
-./build.sh
-python3 -m unittest discover -s tests -v
+# Fresh Ubuntu host: install apt system/build tools, including python3-venv
+./setup.sh --system
+# Create/reuse .venv, run Python tests, and build pinned btrfs-progs
+./setup.sh --build
+source .venv/bin/activate
+python synology_ro.py --help
 ```
 
-The build uses the official pinned upstream source, `--disable-python` to avoid missing Python version pkg-config packages, and never installs the resulting binary globally. Review `synology-compat-generated.patch` after building. Upstream licensing remains separate from this repo.
+If Ubuntu dependencies are already installed, just run `./setup.sh --build`. For an offline **Python-only** check (no C build), use `./setup.sh`. The `--build` step needs internet access to clone `btrfs-progs` on its first run, and can take time. Run setup/build as a normal user, never `sudo ./setup.sh`. `--system` explicitly uses `sudo apt-get`, so review its packages before proceeding. The pinned upstream source is built with `--disable-python` and its binary stays local.
+
+To use without shell activation: `.venv/bin/python synology_ro.py --config config.json doctor`. The Python venv is **not** a safety sandbox for block devices: follow the read-only RAID and disk-identity checks in the runbook. **Never test on disks while DSM is repairing an array.**
+
 
 ## Usage
 
