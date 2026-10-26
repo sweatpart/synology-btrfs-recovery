@@ -1,0 +1,12 @@
+{
+  "source_disk": "/dev/sdX",
+  "source_serial": "REPLACE_WITH_CONFIRMED_SERIAL",
+  "source_member": "/dev/sdX5",
+  "raid": "/dev/md127",
+  "volume": "/dev/vg1000/lv",
+  "backup_device": "/dev/sdY1",
+  "backup_disk": "/dev/sdY",
+  "backup_serial": "REPLACE_WITH_CONFIRMED_BACKUP_SERIAL",
+  "backup_mount": "/mnt/recovery-target",
+  "min_free_gib": 100
+}
